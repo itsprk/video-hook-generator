@@ -12,6 +12,7 @@ export default function HeroSection() {
   const vid2Ref = useRef<HTMLVideoElement | null>(null);
   const vid3Ref = useRef<HTMLVideoElement | null>(null);
   const vid4Ref = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (phase === 12 && vid1Ref.current) {
@@ -38,6 +39,28 @@ export default function HeroSection() {
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(console.error);
+    }
+
+    // Play background music with 2s fade-in to 50% volume
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      audio.currentTime = 0;
+      audio.volume = 0;
+      audio.loop = true;
+      audio.play().catch(console.error);
+      const fadeStart = performance.now();
+      const fadeDuration = 2000;
+      const targetVolume = 0.5;
+      const fadeIn = (now: number) => {
+        const elapsed = now - fadeStart;
+        if (elapsed < fadeDuration) {
+          audio.volume = Math.min(targetVolume, (elapsed / fadeDuration) * targetVolume);
+          requestAnimationFrame(fadeIn);
+        } else {
+          audio.volume = targetVolume;
+        }
+      };
+      requestAnimationFrame(fadeIn);
     }
 
     let t1: NodeJS.Timeout, t2: NodeJS.Timeout, t3: NodeJS.Timeout, t4: NodeJS.Timeout, t5: NodeJS.Timeout, t6: NodeJS.Timeout, t7: NodeJS.Timeout, t8: NodeJS.Timeout, t9: NodeJS.Timeout, t10: NodeJS.Timeout, t11: NodeJS.Timeout, t12: NodeJS.Timeout, t13: NodeJS.Timeout, t14: NodeJS.Timeout, t15: NodeJS.Timeout, t16: NodeJS.Timeout, t17: NodeJS.Timeout, t18: NodeJS.Timeout, t19: NodeJS.Timeout, t20: NodeJS.Timeout;
@@ -602,6 +625,9 @@ export default function HeroSection() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Background Music */}
+      <audio ref={audioRef} src="/bg-music.mp3" preload="auto" />
 
     </motion.main>
   );
