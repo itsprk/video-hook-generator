@@ -46,7 +46,7 @@ export default function HeroSection() {
       const audio = audioRef.current;
       audio.currentTime = 0;
       audio.volume = 0;
-      audio.loop = true;
+      audio.loop = false;
       audio.play().catch(console.error);
       const fadeStart = performance.now();
       const fadeDuration = 2000;
@@ -105,8 +105,33 @@ export default function HeroSection() {
       t18 = setTimeout(() => setPhase(18), 30000); 
       // Phase 19: scene-6 video + text
       t19 = setTimeout(() => setPhase(19), 32500); 
-      // Loop back to start
-      t20 = setTimeout(() => runSequence(), 37000); 
+      // End: fade out audio and show play screen again
+      t20 = setTimeout(() => {
+        // Fade out audio over 2s then pause
+        if (audioRef.current) {
+          const audio = audioRef.current;
+          const fadeOutStart = performance.now();
+          const fadeOutDuration = 2000;
+          const startVol = audio.volume;
+          const fadeOut = (now: number) => {
+            const elapsed = now - fadeOutStart;
+            if (elapsed < fadeOutDuration) {
+              audio.volume = Math.max(0, startVol - (elapsed / fadeOutDuration) * startVol);
+              requestAnimationFrame(fadeOut);
+            } else {
+              audio.volume = 0;
+              audio.pause();
+            }
+          };
+          requestAnimationFrame(fadeOut);
+        }
+        // Stop all videos
+        [videoRef, vid1Ref, vid2Ref, vid3Ref, vid4Ref].forEach(ref => {
+          if (ref.current) { ref.current.pause(); ref.current.currentTime = 0; }
+        });
+        setPhase(0);
+        setHasStarted(false);
+      }, 37000);
     };
 
     runSequence();
