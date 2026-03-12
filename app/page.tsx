@@ -814,7 +814,7 @@ export default function HeroSection() {
                   <video
                     ref={vid6Ref}
                     loop muted playsInline
-                    className="w-[600px] md:w-[900px] h-auto rounded-2xl"
+                    className="w-[720px] md:w-[1080px] h-auto rounded-2xl"
                     src="/flow-video.mp4"
                   />
                   {/* Flow logo with breathing animation + gradient blur */}
@@ -846,12 +846,8 @@ export default function HeroSection() {
                   animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
                   transition={{ opacity: { duration: 0.4, delay: 1.5 }, scale: { duration: 0.4, delay: 1.5 }, y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 } }}
                 >
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
-                      <path d="M14.5 11L17.5 8V16L14.5 13V16C14.5 16.55 14.05 17 13.5 17H5.5C4.95 17 4.5 16.55 4.5 16V8C4.5 7.45 4.95 7 5.5 7H13.5C14.05 7 14.5 7.45 14.5 8V11Z" fill="#00897B"/>
-                      <path d="M14.5 11L17.5 8V16L14.5 13" fill="#00897B" opacity="0.8"/>
-                      <rect x="4.5" y="7" width="10" height="10" rx="1" fill="#00897B" opacity="0.15"/>
-                    </svg>
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center p-2">
+                    <img src="/meet.png" alt="Google Meet" className="w-full h-full object-contain" />
                   </div>
                 </motion.div>
 
@@ -862,14 +858,8 @@ export default function HeroSection() {
                   animate={{ opacity: 1, scale: 1, y: [0, 6, 0] }}
                   transition={{ opacity: { duration: 0.4, delay: 1.7 }, scale: { duration: 0.4, delay: 1.7 }, y: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.7 } }}
                 >
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
-                      <path d="M19.5 8.5C20.33 8.5 21 7.83 21 7C21 6.17 20.33 5.5 19.5 5.5C18.67 5.5 18 6.17 18 7C18 7.83 18.67 8.5 19.5 8.5Z" fill="#5B5FC7"/>
-                      <path d="M20 9.5H17.5V16.5C17.5 17.05 17.95 17.5 18.5 17.5H20C20.55 17.5 21 17.05 21 16.5V11C21 10.17 20.33 9.5 20 9.5Z" fill="#5B5FC7" opacity="0.7"/>
-                      <path d="M15 6.5C16.1 6.5 17 5.6 17 4.5C17 3.4 16.1 2.5 15 2.5C13.9 2.5 13 3.4 13 4.5C13 5.6 13.9 6.5 15 6.5Z" fill="#5B5FC7"/>
-                      <path d="M16.5 7.5H11.5C10.95 7.5 10.5 7.95 10.5 8.5V15.5C10.5 16.6 11.4 17.5 12.5 17.5H16.5C17.05 17.5 17.5 17.05 17.5 16.5V8.5C17.5 7.95 17.05 7.5 16.5 7.5Z" fill="#5B5FC7"/>
-                      <path d="M10.5 10H4.5C3.95 10 3.5 10.45 3.5 11V18C3.5 18.55 3.95 19 4.5 19H10.5C11.05 19 11.5 18.55 11.5 18V11C11.5 10.45 11.05 10 10.5 10Z" fill="#5B5FC7" opacity="0.4"/>
-                    </svg>
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center p-2">
+                    <img src="/teams.png" alt="Microsoft Teams" className="w-full h-full object-contain" />
                   </div>
                 </motion.div>
 
@@ -880,12 +870,8 @@ export default function HeroSection() {
                   animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
                   transition={{ opacity: { duration: 0.4, delay: 1.9 }, scale: { duration: 0.4, delay: 1.9 }, y: { duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 1.9 } }}
                 >
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
-                      <rect x="3" y="7" width="12" height="10" rx="2" fill="#2D8CFF"/>
-                      <path d="M15 10L20 7.5V16.5L15 14V10Z" fill="#2D8CFF"/>
-                      <rect x="5" y="9" width="8" height="6" rx="1" fill="white" opacity="0.3"/>
-                    </svg>
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center p-2">
+                    <img src="/zoom.png" alt="Zoom" className="w-full h-full object-contain" />
                   </div>
                 </motion.div>
               </motion.div>
