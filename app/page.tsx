@@ -228,8 +228,8 @@ export default function HeroSection() {
       <video
         ref={vid8Ref}
         loop muted playsInline
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 blur-xl ${phase === 23 ? 'opacity-20' : 'opacity-0'}`}
-        src="/actionable.mp4"
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 blur-2xl ${phase === 23 ? 'opacity-10' : 'opacity-0'}`}
+        src="/scene-5.mp4"
       />
 
       {/* Gradient Overlay for text readability */}
@@ -786,7 +786,7 @@ export default function HeroSection() {
             transition={{ duration: 0.6 }}
           >
             {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black/75 pointer-events-none" />
+            <div className="absolute inset-0 bg-black/85 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
               {/* "Flow joins your meeting" text — appears immediately */}
@@ -814,7 +814,7 @@ export default function HeroSection() {
                   <video
                     ref={vid6Ref}
                     loop muted playsInline
-                    className="w-[720px] md:w-[1080px] h-auto rounded-2xl"
+                    className="w-[860px] md:w-[1296px] h-auto rounded-2xl"
                     src="/flow-video.mp4"
                   />
                   {/* Flow logo with breathing animation + gradient blur */}
