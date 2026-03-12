@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, ShieldCheck, Lock } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 export default function HeroSection() {
   const [hasStarted, setHasStarted] = useState(false);
@@ -12,6 +12,10 @@ export default function HeroSection() {
   const vid2Ref = useRef<HTMLVideoElement | null>(null);
   const vid3Ref = useRef<HTMLVideoElement | null>(null);
   const vid4Ref = useRef<HTMLVideoElement | null>(null);
+  const vid5Ref = useRef<HTMLVideoElement | null>(null); // research video
+  const vid6Ref = useRef<HTMLVideoElement | null>(null); // flow-video.mp4
+  // vid7 removed (instill-logo-anim had black bg)
+  const vid8Ref = useRef<HTMLVideoElement | null>(null); // bg video for final scene
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -27,9 +31,26 @@ export default function HeroSection() {
       vid3Ref.current.currentTime = 0;
       vid3Ref.current.play().catch(() => {});
     }
-    if (phase === 19 && vid4Ref.current) {
+    // Research video (phase 19, 3.5s)
+    if (phase === 19 && vid5Ref.current) {
+      vid5Ref.current.currentTime = 0;
+      vid5Ref.current.play().catch(() => {});
+    }
+    // Scene 6 video (phase 22)
+    if (phase === 22 && vid4Ref.current) {
       vid4Ref.current.currentTime = 2;
       vid4Ref.current.play().catch(() => {});
+    }
+    // Flow joins your meeting scene (phase 23)
+    if (phase === 23) {
+      if (vid8Ref.current) {
+        vid8Ref.current.currentTime = 0;
+        vid8Ref.current.play().catch(() => {});
+      }
+      if (vid6Ref.current) {
+        vid6Ref.current.currentTime = 0;
+        vid6Ref.current.play().catch(() => {});
+      }
     }
   }, [phase]);
 
@@ -54,7 +75,7 @@ export default function HeroSection() {
       const fadeIn = (now: number) => {
         const elapsed = now - fadeStart;
         if (elapsed < fadeDuration) {
-          audio.volume = Math.min(targetVolume, (elapsed / fadeDuration) * targetVolume);
+          audio.volume = Math.min(targetVolume, Math.max(0, (elapsed / fadeDuration) * targetVolume));
           requestAnimationFrame(fadeIn);
         } else {
           audio.volume = targetVolume;
@@ -63,107 +84,87 @@ export default function HeroSection() {
       requestAnimationFrame(fadeIn);
     }
 
-    let t1: NodeJS.Timeout, t2: NodeJS.Timeout, t3: NodeJS.Timeout, t4: NodeJS.Timeout, t5: NodeJS.Timeout, t6: NodeJS.Timeout, t7: NodeJS.Timeout, t8: NodeJS.Timeout, t9: NodeJS.Timeout, t10: NodeJS.Timeout, t11: NodeJS.Timeout, t12: NodeJS.Timeout, t13: NodeJS.Timeout, t14: NodeJS.Timeout, t15: NodeJS.Timeout, t16: NodeJS.Timeout, t17: NodeJS.Timeout, t18: NodeJS.Timeout, t19: NodeJS.Timeout, t20: NodeJS.Timeout;
-    
-    const runSequence = () => {
+    const timers: NodeJS.Timeout[] = [];
+    const at = (ms: number, p: number) => {
+      timers.push(setTimeout(() => setPhase(p), ms));
+    };
+
+    setPhase(0);
+    at(2000, 1);    // Question on video
+    at(4500, 2);    // CULTURE
+    at(5300, 3);    // CULTURE echoes
+    at(7300, 4);    // Zoom out CULTURE
+    at(8000, 5);    // Invisible
+    at(9500, 6);    // Fade out invisible
+    at(10500, 7);   // Unmeasured
+    at(11500, 8);   // Unstructured
+    at(12500, 9);   // Unused
+    at(13500, 10);  // Until now
+    at(15500, 11);  // Imagine if culture became
+    at(17500, 12);  // Visible
+    at(19500, 13);  // Measurable
+    at(21500, 14);  // Actionable
+    at(23500, 15);  // And backed by
+    at(25000, 16);  // SOC / GDPR
+    // --- Research section ---
+    at(28000, 17);  // "Grounded in Research"
+    at(30000, 18);  // Fade out title + experts subtitle with AI
+    at(32500, 19);  // Research video with logos (3.5s)
+    // --- Introducing section ---
+    at(36000, 20);  // INTRODUCING
+    at(38000, 21);  // Flow logo
+    at(40500, 22);  // scene-6 video + buddy text
+    at(43500, 23);  // "Flow joins your meeting" text → then video reveals + icons
+    // End
+    timers.push(setTimeout(() => {
+      if (audioRef.current) {
+        const audio = audioRef.current;
+        const fadeOutStart = performance.now();
+        const fadeOutDuration = 2000;
+        const startVol = audio.volume;
+        const fadeOut = (now: number) => {
+          const elapsed = now - fadeOutStart;
+          if (elapsed < fadeOutDuration) {
+            audio.volume = Math.min(1, Math.max(0, startVol - (elapsed / fadeOutDuration) * startVol));
+            requestAnimationFrame(fadeOut);
+          } else {
+            audio.volume = 0;
+            audio.pause();
+          }
+        };
+        requestAnimationFrame(fadeOut);
+      }
+      [videoRef, vid1Ref, vid2Ref, vid3Ref, vid4Ref, vid5Ref, vid6Ref, vid8Ref].forEach(ref => {
+        if (ref.current) { ref.current.pause(); ref.current.currentTime = 0; }
+      });
       setPhase(0);
-      // Phase 1: Video appears, show the rest of the question staggered
-      t1 = setTimeout(() => setPhase(1), 2000); 
-      // Phase 2: Fade to black, show single CULTURE
-      t2 = setTimeout(() => setPhase(2), 4500); 
-      // Phase 3: Show CULTURE echoes
-      t3 = setTimeout(() => setPhase(3), 5300); 
-      // Phase 4: Zoom out CULTURE
-      t4 = setTimeout(() => setPhase(4), 7300); 
-      // Phase 5: But most of it is invisible
-      t5 = setTimeout(() => setPhase(5), 8000); 
-      // Phase 6: Fade out invisible
-      t6 = setTimeout(() => setPhase(6), 9500); 
-      // Phase 7: Unmeasured
-      t7 = setTimeout(() => setPhase(7), 10500); 
-      // Phase 8: Unstructured
-      t8 = setTimeout(() => setPhase(8), 11500); 
-      // Phase 9: Unused
-      t9 = setTimeout(() => setPhase(9), 12500); 
-      // Phase 10: Until now
-      t10 = setTimeout(() => setPhase(10), 13500); 
-      // Phase 11: Imagine if culture became
-      t11 = setTimeout(() => setPhase(11), 15500); 
-      // Phase 12: Visible
-      t12 = setTimeout(() => setPhase(12), 17500); 
-      // Phase 13: Measurable
-      t13 = setTimeout(() => setPhase(13), 19500); 
-      // Phase 14: Actionable
-      t14 = setTimeout(() => setPhase(14), 21500); 
-      // Phase 15: And backed by
-      t15 = setTimeout(() => setPhase(15), 23500); 
-      // Phase 16: SOC / GDPR
-      t16 = setTimeout(() => setPhase(16), 25000); 
-      // Phase 17: INTRODUCING
-      t17 = setTimeout(() => setPhase(17), 28000); 
-      // Phase 18: Flow logo
-      t18 = setTimeout(() => setPhase(18), 30000); 
-      // Phase 19: scene-6 video + text
-      t19 = setTimeout(() => setPhase(19), 32500); 
-      // End: fade out audio and show play screen again
-      t20 = setTimeout(() => {
-        // Fade out audio over 2s then pause
-        if (audioRef.current) {
-          const audio = audioRef.current;
-          const fadeOutStart = performance.now();
-          const fadeOutDuration = 2000;
-          const startVol = audio.volume;
-          const fadeOut = (now: number) => {
-            const elapsed = now - fadeOutStart;
-            if (elapsed < fadeOutDuration) {
-              audio.volume = Math.max(0, startVol - (elapsed / fadeOutDuration) * startVol);
-              requestAnimationFrame(fadeOut);
-            } else {
-              audio.volume = 0;
-              audio.pause();
-            }
-          };
-          requestAnimationFrame(fadeOut);
-        }
-        // Stop all videos
-        [videoRef, vid1Ref, vid2Ref, vid3Ref, vid4Ref].forEach(ref => {
-          if (ref.current) { ref.current.pause(); ref.current.currentTime = 0; }
-        });
-        setPhase(0);
-        setHasStarted(false);
-      }, 37000);
-    };
+      setHasStarted(false);
+    }, 49000));
 
-    runSequence();
-
-    return () => {
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
-      clearTimeout(t5); clearTimeout(t6); clearTimeout(t7); clearTimeout(t8);
-      clearTimeout(t9); clearTimeout(t10); clearTimeout(t11); clearTimeout(t12);
-      clearTimeout(t13); clearTimeout(t14); clearTimeout(t15); clearTimeout(t16);
-      clearTimeout(t17); clearTimeout(t18); clearTimeout(t19); clearTimeout(t20);
-    };
+    return () => { timers.forEach(clearTimeout); };
   }, [hasStarted]);
 
+  const buddyWords = "Your super intelligent in-meeting performance and culture buddy.".split(" ");
+
   return (
-    <motion.main 
+    <motion.main
       className="relative min-h-screen w-full overflow-hidden font-sans flex items-center justify-center"
       initial={{ backgroundColor: '#000000' }}
       animate={{
-        backgroundColor: 
-          phase === 7 ? '#ffffff' : // Unmeasured (White)
-          phase === 8 ? '#000000' : // Unstructured (Black)
-          phase === 9 ? '#ffffff' : // Unused (White)
-          phase === 10 ? '#000000' : // Until now (Black)
+        backgroundColor:
+          phase === 7 ? '#ffffff' :
+          phase === 8 ? '#000000' :
+          phase === 9 ? '#ffffff' :
+          phase === 10 ? '#000000' :
           '#000000'
       }}
       transition={{ duration: 0.2 }}
     >
-      
+
       {/* Intro Screen */}
       <AnimatePresence>
         {!hasStarted && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black text-white"
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
@@ -171,7 +172,7 @@ export default function HeroSection() {
             <h1 className="text-4xl md:text-6xl font-[family-name:var(--font-inter-tight)] font-bold tracking-tighter mb-8">
               Instill Flow
             </h1>
-            <button 
+            <button
               onClick={() => setHasStarted(true)}
               className="group flex items-center gap-3 bg-white text-black px-8 py-4 rounded-full font-[family-name:var(--font-inter-tight)] font-semibold text-lg hover:scale-105 transition-transform"
             >
@@ -195,28 +196,44 @@ export default function HeroSection() {
       />
 
       {/* Background Videos for Phase 12-14 */}
-      <video 
-        ref={(el) => { 
+      <video
+        ref={(el) => {
           vid1Ref.current = el;
-          if (el) el.playbackRate = 2.0; 
+          if (el) el.playbackRate = 2.0;
         }}
-        loop muted playsInline 
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${phase === 12 ? 'opacity-50' : 'opacity-0'}`} 
-        src="/sunrise.mp4" 
+        loop muted playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${phase === 12 ? 'opacity-50' : 'opacity-0'}`}
+        src="/sunrise.mp4"
       />
       <video ref={vid2Ref} loop muted playsInline className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${phase === 13 ? 'opacity-50' : 'opacity-0'}`} src="/measurable.mp4" />
       <video ref={vid3Ref} loop muted playsInline className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${phase === 14 ? 'opacity-50' : 'opacity-0'}`} src="/actionable.mp4" />
-      
-      {/* Background Video for Phase 19 */}
-      <video 
-        ref={vid4Ref} 
-        loop muted playsInline 
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${phase === 19 ? 'opacity-60' : 'opacity-0'}`} 
-        src="/scene-6.mp4" 
+
+      {/* Research Video for Phase 19 */}
+      <video
+        ref={vid5Ref}
+        loop muted playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${phase === 19 ? 'opacity-50' : 'opacity-0'}`}
+        src="/research-video.mp4"
+      />
+
+      {/* Background Video for Phase 22-23 (scene-6) */}
+      <video
+        ref={vid4Ref}
+        loop muted playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${phase === 22 ? 'opacity-60' : 'opacity-0'}`}
+        src="/scene-6.mp4"
+      />
+
+      {/* Background Video for Phase 24 (sunrise with blur + dark overlay) */}
+      <video
+        ref={vid8Ref}
+        loop muted playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 blur-xl ${phase === 23 ? 'opacity-20' : 'opacity-0'}`}
+        src="/actionable.mp4"
       />
 
       {/* Gradient Overlay for text readability */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none"
         animate={{ opacity: phase === 1 ? 1 : 0 }}
         transition={{ duration: 0.8 }}
@@ -225,7 +242,7 @@ export default function HeroSection() {
       {/* Phase 0: DO YOU KNOW */}
       <AnimatePresence>
         {hasStarted && phase === 0 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center bg-black"
             exit={{ opacity: 0, scale: 1.1 }}
             transition={{ duration: 0.4 }}
@@ -243,7 +260,7 @@ export default function HeroSection() {
               className="flex flex-col items-center justify-center gap-2"
             >
               {['DO', 'YOU', 'KNOW'].map((word, i) => (
-                <motion.h1 
+                <motion.h1
                   key={i}
                   variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
                   className="font-[family-name:var(--font-inter-tight)] font-black text-7xl md:text-9xl uppercase tracking-tighter text-white leading-none"
@@ -259,7 +276,7 @@ export default function HeroSection() {
       {/* Phase 1: The Question */}
       <AnimatePresence>
         {hasStarted && phase === 1 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -280,7 +297,7 @@ export default function HeroSection() {
               className="flex flex-col items-center gap-2 max-w-4xl"
             >
               <motion.h2 variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="font-[family-name:var(--font-inter-tight)] font-bold text-4xl md:text-6xl text-white drop-shadow-lg leading-tight">
-                What's the #1 driver of
+                What&apos;s the #1 driver of
               </motion.h2>
               <motion.h2 variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="font-[family-name:var(--font-inter-tight)] font-bold text-4xl md:text-6xl text-white drop-shadow-lg leading-tight">
                 high-performing organizations?
@@ -293,53 +310,52 @@ export default function HeroSection() {
       {/* Phase 2 & 3: CULTURE */}
       <AnimatePresence>
         {hasStarted && phase >= 2 && phase < 4 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-20 flex items-center justify-center"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 4, filter: "blur(20px)" }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
           >
-            {/* Echoes */}
             <AnimatePresence>
               {phase === 3 && (
                 <>
-                  <motion.h1 
-                    initial={{ y: 0, opacity: 0 }} 
-                    animate={{ y: -100, opacity: 0.6 }} 
-                    exit={{ opacity: 0 }} 
+                  <motion.h1
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: -100, opacity: 0.6 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.6, type: "spring", bounce: 0.5 }}
-                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter" 
+                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter"
                     style={{ WebkitTextStroke: '2px white' }}
                   >
                     CULTURE
                   </motion.h1>
-                  <motion.h1 
-                    initial={{ y: 0, opacity: 0 }} 
-                    animate={{ y: 100, opacity: 0.6 }} 
-                    exit={{ opacity: 0 }} 
+                  <motion.h1
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: 100, opacity: 0.6 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.6, type: "spring", bounce: 0.5 }}
-                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter" 
+                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter"
                     style={{ WebkitTextStroke: '2px white' }}
                   >
                     CULTURE
                   </motion.h1>
-                  <motion.h1 
-                    initial={{ y: 0, opacity: 0 }} 
-                    animate={{ y: -200, opacity: 0.2 }} 
-                    exit={{ opacity: 0 }} 
+                  <motion.h1
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: -200, opacity: 0.2 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.6, type: "spring", bounce: 0.5, delay: 0.08 }}
-                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter" 
+                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter"
                     style={{ WebkitTextStroke: '2px white' }}
                   >
                     CULTURE
                   </motion.h1>
-                  <motion.h1 
-                    initial={{ y: 0, opacity: 0 }} 
-                    animate={{ y: 200, opacity: 0.2 }} 
-                    exit={{ opacity: 0 }} 
+                  <motion.h1
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: 200, opacity: 0.2 }}
+                    exit={{ opacity: 0 }}
                     transition={{ duration: 0.6, type: "spring", bounce: 0.5, delay: 0.08 }}
-                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter" 
+                    className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-transparent absolute leading-none tracking-tighter"
                     style={{ WebkitTextStroke: '2px white' }}
                   >
                     CULTURE
@@ -348,8 +364,7 @@ export default function HeroSection() {
               )}
             </AnimatePresence>
 
-            {/* Main Text */}
-            <motion.h1 
+            <motion.h1
               layoutId="culture-main"
               className="text-6xl md:text-[9rem] font-[family-name:var(--font-inter-tight)] font-black text-white absolute drop-shadow-[0_0_40px_#3AD0F8] leading-none tracking-tighter"
             >
@@ -362,10 +377,10 @@ export default function HeroSection() {
       {/* Phase 5: Invisible */}
       <AnimatePresence>
         {hasStarted && phase === 5 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center"
           >
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
@@ -374,7 +389,7 @@ export default function HeroSection() {
             >
               But most of it is
             </motion.h2>
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 50 }}
@@ -391,7 +406,7 @@ export default function HeroSection() {
       {/* Phase 7, 8, 9, 10: Un- sequence */}
       <AnimatePresence>
         {hasStarted && phase >= 7 && phase <= 10 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-30 flex items-center justify-center px-4"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -403,7 +418,7 @@ export default function HeroSection() {
               <div className="relative w-[240px] md:w-[460px] text-left">
                 <AnimatePresence>
                   {phase === 7 && (
-                    <motion.span 
+                    <motion.span
                       key="measured"
                       className="absolute left-0 whitespace-nowrap transition-colors duration-200"
                       initial={{ y: 0, opacity: 1, rotateX: 0 }}
@@ -416,7 +431,7 @@ export default function HeroSection() {
                     </motion.span>
                   )}
                   {phase === 8 && (
-                    <motion.span 
+                    <motion.span
                       key="structured"
                       className="absolute left-0 whitespace-nowrap transition-colors duration-200"
                       initial={{ y: 40, opacity: 0, rotateX: -90 }}
@@ -429,7 +444,7 @@ export default function HeroSection() {
                     </motion.span>
                   )}
                   {phase === 9 && (
-                    <motion.span 
+                    <motion.span
                       key="used"
                       className="absolute left-0 whitespace-nowrap transition-colors duration-200"
                       initial={{ y: 40, opacity: 0, rotateX: -90 }}
@@ -442,7 +457,7 @@ export default function HeroSection() {
                     </motion.span>
                   )}
                   {phase === 10 && (
-                    <motion.span 
+                    <motion.span
                       key="tilnow"
                       className="absolute left-0 whitespace-nowrap transition-colors duration-200"
                       initial={{ y: 40, opacity: 0, rotateX: -90 }}
@@ -464,7 +479,7 @@ export default function HeroSection() {
       {/* Phase 11: Imagine if culture became */}
       <AnimatePresence>
         {hasStarted && phase === 11 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center"
             initial={{ opacity: 0, x: "100vw" }}
             animate={{ opacity: 1, x: 0 }}
@@ -481,7 +496,7 @@ export default function HeroSection() {
       {/* Phase 12, 13, 14: Visible, Measurable, Actionable */}
       <AnimatePresence mode="wait">
         {hasStarted && phase >= 12 && phase <= 14 && (
-          <motion.div 
+          <motion.div
             key={phase}
             className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -499,7 +514,7 @@ export default function HeroSection() {
       {/* Phase 15: And backed by */}
       <AnimatePresence>
         {hasStarted && phase === 15 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center bg-black"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -516,7 +531,7 @@ export default function HeroSection() {
       {/* Phase 16: SOC / GDPR */}
       <AnimatePresence>
         {hasStarted && phase === 16 && (
-          <motion.div 
+          <motion.div
             className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center bg-black"
             initial="hidden"
             animate="show"
@@ -527,14 +542,14 @@ export default function HeroSection() {
             }}
           >
             <div className="flex gap-12 md:gap-24 mb-10">
-              <motion.div 
+              <motion.div
                 variants={{ hidden: { opacity: 0, y: 30, scale: 0.8 }, show: { opacity: 1, y: 0, scale: 1 } }}
                 className="flex flex-col items-center gap-4"
               >
                 <img src="/SOC 2 (1).png" alt="SOC 2" className="w-24 h-24 md:w-32 md:h-32 object-contain" />
                 <span className="text-white font-bold text-2xl md:text-3xl tracking-widest">SOC 2</span>
               </motion.div>
-              <motion.div 
+              <motion.div
                 variants={{ hidden: { opacity: 0, y: 30, scale: 0.8 }, show: { opacity: 1, y: 0, scale: 1 } }}
                 className="flex flex-col items-center gap-4"
               >
@@ -542,20 +557,130 @@ export default function HeroSection() {
                 <span className="text-white font-bold text-2xl md:text-3xl tracking-widest">GDPR</span>
               </motion.div>
             </div>
-            <motion.h2 
+            <motion.h2
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
               className="text-3xl md:text-5xl font-[family-name:var(--font-inter-tight)] font-medium text-gray-300 max-w-3xl leading-tight"
             >
-              Enterprise-grade privacy and security
+              Enterprise-grade{' '}
+              <span className="inline-block text-transparent bg-clip-text bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite] bg-gradient-to-r from-emerald-400 via-green-200 to-emerald-400">privacy</span>
+              {' '}and{' '}
+              <span className="inline-block text-transparent bg-clip-text bg-[length:200%_100%] animate-[shimmer_3s_ease-in-out_infinite_0.5s] bg-gradient-to-r from-emerald-400 via-green-200 to-emerald-400">security</span>
             </motion.h2>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Phase 17: INTRODUCING */}
+      {/* ===== RESEARCH SECTION (Phases 17-19) ===== */}
+
+      {/* Phase 17: "Grounded in Research" text on dark — fades out on exit */}
       <AnimatePresence>
         {hasStarted && phase === 17 && (
-          <motion.div 
+          <motion.div
+            className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center bg-black"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -100, scale: 0.9 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-5xl md:text-8xl font-[family-name:var(--font-inter-tight)] font-black text-white tracking-tighter"
+            >
+              Grounded in Research
+            </motion.h2>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Phase 18: Experts subtitle — only AI text scales + fades on exit */}
+      <AnimatePresence>
+        {hasStarted && phase === 18 && (
+          <motion.div
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center bg-black overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-2xl md:text-4xl font-[family-name:var(--font-inter-tight)] font-medium text-gray-300 max-w-4xl leading-relaxed"
+            >
+              with Experts in Neuroscience,
+              <br />
+              Organizational Psychology, and{' '}
+              <motion.span
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.4, opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeIn" }}
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-[#3AD0F8] to-white font-black text-4xl md:text-6xl"
+              >
+                AI
+              </motion.span>
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Phase 19: Research video with 3 logos (3.5s) — fades up */}
+      <AnimatePresence>
+        {hasStarted && phase === 19 && (
+          <motion.div
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, filter: "blur(10px)" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            {/* Dark overlay on video for logo readability */}
+            <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+
+            {/* 3 Logos fade up */}
+            <motion.div
+              className="relative z-10 flex items-center justify-center gap-10 md:gap-20"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.2 } }
+              }}
+            >
+              <motion.img
+                variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                src="/logo-arl.png"
+                alt="ARL"
+                className="h-12 md:h-20 object-contain drop-shadow-lg"
+              />
+              <motion.img
+                variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                src="/logo-2.png"
+                alt="Research Partner"
+                className="h-12 md:h-20 object-contain drop-shadow-lg"
+              />
+              <motion.img
+                variants={{ hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                src="/logo-stanford.png"
+                alt="Stanford"
+                className="h-12 md:h-20 object-contain drop-shadow-lg"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===== END RESEARCH SECTION ===== */}
+
+      {/* Phase 20: INTRODUCING */}
+      <AnimatePresence>
+        {hasStarted && phase === 20 && (
+          <motion.div
             className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center bg-black"
             exit={{ opacity: 0, scale: 1.1 }}
             transition={{ duration: 0.5 }}
@@ -586,44 +711,43 @@ export default function HeroSection() {
         )}
       </AnimatePresence>
 
-      {/* Phase 18: Flow Logo */}
+      {/* Phase 21: Flow Logo */}
       <AnimatePresence>
-        {hasStarted && phase === 18 && (
-          <motion.div 
+        {hasStarted && phase === 21 && (
+          <motion.div
             className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
             transition={{ duration: 0.8 }}
           >
-            {/* Glowing background */}
             <div className="absolute w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-[#3AD0F8] rounded-full blur-[100px] opacity-20 animate-pulse" />
-            
-            <div className="relative z-10 flex flex-col items-center gap-6">
-              <motion.img 
+
+            <div className="relative z-10 flex flex-col items-center gap-0">
+              <motion.img
                 initial={{ opacity: 0, y: 30, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.6, type: "spring", bounce: 0.5 }}
-                src="/Flow (1).png" alt="Flow Icon" className="w-32 h-32 md:w-48 md:h-48 object-contain drop-shadow-[0_0_30px_rgba(58,208,248,0.5)]" 
+                src="/Flow (1).png" alt="Flow Icon" className="w-[166px] h-[166px] md:w-[250px] md:h-[250px] object-contain drop-shadow-[0_0_30px_rgba(58,208,248,0.5)]"
               />
-              <motion.img 
+              <motion.img
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2, type: "spring", bounce: 0.5 }}
-                src="/flow-text-logo.svg" alt="Flow Text" className="h-12 md:h-16 object-contain" 
+                src="/flow-text-logo.svg" alt="Flow Text" className="h-[55px] md:h-[73px] object-contain -mt-[40px] md:-mt-[60px]"
               />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Phase 19: Buddy Text */}
+      {/* Phase 22: Buddy Text (normal) */}
       <AnimatePresence>
-        {hasStarted && phase === 19 && (
-          <motion.div 
+        {hasStarted && phase === 22 && (
+          <motion.div
             className="absolute inset-0 z-30 flex items-center justify-center px-4 text-center"
-            exit={{ opacity: 0, filter: "blur(10px)" }}
-            transition={{ duration: 0.8 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
             <motion.div
               className="flex flex-wrap justify-center gap-x-3 gap-y-2 max-w-5xl"
@@ -634,7 +758,7 @@ export default function HeroSection() {
                 show: { opacity: 1, transition: { staggerChildren: 0.08 } }
               }}
             >
-              {"Your super intelligent in-meeting performance and culture buddy.".split(" ").map((word, i) => (
+              {buddyWords.map((word, i) => (
                 <motion.span
                   key={i}
                   variants={{
@@ -647,6 +771,125 @@ export default function HeroSection() {
                 </motion.span>
               ))}
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Phase 23: "Flow joins your meeting" — text first, video reveals after 1s, icons after 1.5s */}
+      <AnimatePresence>
+        {hasStarted && phase === 23 && (
+          <motion.div
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-4 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, filter: "blur(10px)" }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/75 pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col items-center gap-6">
+              {/* "Flow joins your meeting" text — appears immediately */}
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="text-4xl md:text-7xl font-[family-name:var(--font-inter-tight)] font-bold text-white tracking-tight"
+              >
+                Flow joins your{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3AD0F8] to-white">
+                  meeting
+                </span>
+              </motion.h2>
+
+              {/* Video container — reveals after 1s */}
+              <motion.div
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+                className="relative"
+              >
+                {/* flow-video.mp4 */}
+                <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_rgba(58,208,248,0.3)]">
+                  <video
+                    ref={vid6Ref}
+                    loop muted playsInline
+                    className="w-[600px] md:w-[900px] h-auto rounded-2xl"
+                    src="/flow-video.mp4"
+                  />
+                  {/* Flow logo with breathing animation + gradient blur */}
+                  <div className="absolute top-4 left-4 flex items-center justify-center">
+                    <motion.div
+                      className="absolute w-[120px] h-[120px] rounded-full bg-gradient-to-r from-[#3AD0F8] via-[#7B61FF] to-[#3AD0F8] blur-[30px]"
+                      animate={{
+                        opacity: [0.5, 0.8, 0.5],
+                        scale: [0.9, 1.2, 0.9],
+                      }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                      style={{ backgroundSize: "200% 200%" }}
+                    />
+                    <motion.img
+                      src="/Flow (1).png"
+                      alt="Flow"
+                      className="relative w-[90px] h-[90px] object-contain drop-shadow-[0_0_20px_rgba(58,208,248,0.6)]"
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Floating meeting platform icons — appear after 1.5s */}
+                {/* Google Meet - top right */}
+                <motion.div
+                  className="absolute -top-4 -right-6 md:-top-6 md:-right-10"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+                  transition={{ opacity: { duration: 0.4, delay: 1.5 }, scale: { duration: 0.4, delay: 1.5 }, y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 } }}
+                >
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
+                      <path d="M14.5 11L17.5 8V16L14.5 13V16C14.5 16.55 14.05 17 13.5 17H5.5C4.95 17 4.5 16.55 4.5 16V8C4.5 7.45 4.95 7 5.5 7H13.5C14.05 7 14.5 7.45 14.5 8V11Z" fill="#00897B"/>
+                      <path d="M14.5 11L17.5 8V16L14.5 13" fill="#00897B" opacity="0.8"/>
+                      <rect x="4.5" y="7" width="10" height="10" rx="1" fill="#00897B" opacity="0.15"/>
+                    </svg>
+                  </div>
+                </motion.div>
+
+                {/* Microsoft Teams - bottom right */}
+                <motion.div
+                  className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-8"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, 6, 0] }}
+                  transition={{ opacity: { duration: 0.4, delay: 1.7 }, scale: { duration: 0.4, delay: 1.7 }, y: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.7 } }}
+                >
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
+                      <path d="M19.5 8.5C20.33 8.5 21 7.83 21 7C21 6.17 20.33 5.5 19.5 5.5C18.67 5.5 18 6.17 18 7C18 7.83 18.67 8.5 19.5 8.5Z" fill="#5B5FC7"/>
+                      <path d="M20 9.5H17.5V16.5C17.5 17.05 17.95 17.5 18.5 17.5H20C20.55 17.5 21 17.05 21 16.5V11C21 10.17 20.33 9.5 20 9.5Z" fill="#5B5FC7" opacity="0.7"/>
+                      <path d="M15 6.5C16.1 6.5 17 5.6 17 4.5C17 3.4 16.1 2.5 15 2.5C13.9 2.5 13 3.4 13 4.5C13 5.6 13.9 6.5 15 6.5Z" fill="#5B5FC7"/>
+                      <path d="M16.5 7.5H11.5C10.95 7.5 10.5 7.95 10.5 8.5V15.5C10.5 16.6 11.4 17.5 12.5 17.5H16.5C17.05 17.5 17.5 17.05 17.5 16.5V8.5C17.5 7.95 17.05 7.5 16.5 7.5Z" fill="#5B5FC7"/>
+                      <path d="M10.5 10H4.5C3.95 10 3.5 10.45 3.5 11V18C3.5 18.55 3.95 19 4.5 19H10.5C11.05 19 11.5 18.55 11.5 18V11C11.5 10.45 11.05 10 10.5 10Z" fill="#5B5FC7" opacity="0.4"/>
+                    </svg>
+                  </div>
+                </motion.div>
+
+                {/* Zoom - bottom left */}
+                <motion.div
+                  className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-8"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
+                  transition={{ opacity: { duration: 0.4, delay: 1.9 }, scale: { duration: 0.4, delay: 1.9 }, y: { duration: 2.8, repeat: Infinity, ease: "easeInOut", delay: 1.9 } }}
+                >
+                  <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-9 h-9 md:w-10 md:h-10">
+                      <rect x="3" y="7" width="12" height="10" rx="2" fill="#2D8CFF"/>
+                      <path d="M15 10L20 7.5V16.5L15 14V10Z" fill="#2D8CFF"/>
+                      <rect x="5" y="9" width="8" height="6" rx="1" fill="white" opacity="0.3"/>
+                    </svg>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
