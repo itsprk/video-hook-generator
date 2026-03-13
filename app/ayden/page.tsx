@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Play } from 'lucide-react';
 
 const ASSETS = {
-  videos: ['/sunrise.mp4', '/measurable.mp4', '/actionable.mp4', '/sunrise.mp4'],
+  videos: ['/visible-new.mp4', '/measurable.mp4', '/actionable.mp4', '/secure-new.mp4'],
   audioClips: [
     '/audio-culture.mp3',
     '/audio-imagine.mp3',
@@ -445,7 +445,7 @@ export default function AydenPage() {
                 opacity: phase === 5 ? 1 : 0,
                 transition: 'opacity 0.4s ease-in-out',
               }}
-              src="/sunrise.mp4"
+              src="/visible-new.mp4"
             />
             <video
               ref={vid2Ref}
@@ -514,7 +514,7 @@ export default function AydenPage() {
                   transform: secureVideoPlaying ? 'scale(1)' : 'scale(1.03)',
                   transition: 'opacity 0.5s ease-in-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
-                src="/sunrise.mp4"
+                src="/secure-new.mp4"
               />
               <div className="absolute inset-0 bg-black/10" />
             </div>
